@@ -1,7 +1,6 @@
 import random from "lodash/random"
 import range from "lodash/range"
 import uniq from "lodash/uniq"
-import fill from "lodash/fill"
 
 import { useState } from "react"
 import './App.css'
@@ -9,10 +8,13 @@ import './App.css'
 const beingTable = [
   "⚓🍎💰🍺🔔🐦💣🦴📕🧹🪲🍭🥕🐈🧪♞🍗🎞☁☕🧭🤠👑🐕🚪🌎🥚🌲👁💎🪶🐟🏴🔥🍴⚙",
   "🎁🥛🎸💨👻🔨⛓👷🎧❤⏳🏠🧠✋💀🦷🍦🔑🛡🍃🍋💡🌩💧🧲🔍🧤💵🌙🎵🔒🖌✂🎲📎🛩",
-  "📜🐾✏🌶🧩☢👓📏⚖🪛👣🦐🍞🍕❄⚽🧦🕷🥄⭐💼☀💉📞🎭🌡🌪🗑🏆👕☂🌊🧀🏋🍾🔧",
+  "📜🐾✏🌶🧩☢👓📏⚖👣🦐🍞🍕❄⚽🧦🕷🥄⭐💼☀💉📞🎭🌡🌪🗑🏆👕☂🌊🧀🏋🍾🔧",
+  // These emoji in the pile cause problems on Windows in browser
+  "🪲", // Beetle
+  "🪛", // Screwdriver
 ].flatMap(s=> Array.from(s))
 
-const doingTable = Array.from("🚫🗨✔🎯➗⬇🟰❕…⏩>←📈♾≠⏸%📊▶±❔♻⏪♂♀⋮√〰∴🔄🔀↔⬆")
+const doingTable = Array.from("🚫🗨✔🎯➗⬇=❕…⏩>←📈♾≠⏸%📊▶±❔♻⏪♂♀⋮√〰∴🔄🔀↔⬆")
 .concat([
   "(🔺🟩🔵)", "([ ][ ])", "(←↕→)", "(>|<)"
 ])
@@ -33,7 +35,7 @@ const uniqFill = <T extends unknown>(size: number, func: () => T) => {
 }
 
 const makeBeing = () => uniqFill(5, () => pick(beingTable))
-const makeDoing = () => uniqFill(3, () => pick(doingTable) + pick(beingTable))
+const makeDoing = () => uniqFill(3, () => pick(doingTable) + " " + pick(beingTable))
 
 function App() {
   const [being, setBeing] = useState(makeBeing())
@@ -47,7 +49,7 @@ function App() {
       <header className="App-header">
         <div className="App-logo">🔄🐦</div>
         <ul>
-          <li>{being.join("")}</li>
+          <li>{being.map(s=><span key={s}>{s}</span>)}</li>
           {doing.map((arr, i) => <li key={i}>{arr}</li>)}
         </ul>
         <button onClick={newCharacter}>
@@ -56,7 +58,7 @@ function App() {
         <a style={{marginTop: "2em"}} href="https://penguinking.com/rotate-bird/">©🐧👑</a>
       </header>
     </div>
-  );
+  )
 }
 
 export default App;
