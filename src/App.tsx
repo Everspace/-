@@ -1,22 +1,39 @@
 import random from "lodash/random"
 import range from "lodash/range"
+import uniq from "lodash/uniq"
+import fill from "lodash/fill"
+
 import { useState } from "react"
 import './App.css'
 
 const beingTable = [
-  "⚓🍎💰🍺🔔🐦💣🦴📕🧹🐛🍭🥕🐱🧪♟🍗🎞☁☕🧭🤠👑🐶🚪🥚🌲👁💎🐟🚩🔥🍴⚙",
-  "🎁🥛🎸💨👻🔨👷🎧♥⌛🏠🧠✋💀🦷🍦🔑🛡🍁🍋💡⚡💧🧲🔍🧤💵🌙🎵🔒🖌✂🎲📎✈",
-  "📜🐾✏🌶🧩☢🕶📏⚖🔧👣🦐🍞🍕❄⚽🧦🕷🥄⭐💼☀💉📞🎭🌡🌪🚮🏆👕☂🌊🧀💪🍷",
+  "⚓🍎💰🍺🔔🐦💣🦴📕🧹🪲🍭🥕🐈🧪♞🍗🎞☁☕🧭🤠👑🐕🚪🌎🥚🌲👁💎🪶🐟🏴🔥🍴⚙",
+  "🎁🥛🎸💨👻🔨⛓👷🎧❤⏳🏠🧠✋💀🦷🍦🔑🛡🍃🍋💡🌩💧🧲🔍🧤💵🌙🎵🔒🖌✂🎲📎🛩",
+  "📜🐾✏🌶🧩☢👓📏⚖🪛👣🦐🍞🍕❄⚽🧦🕷🥄⭐💼☀💉📞🎭🌡🌪🗑🏆👕☂🌊🧀🏋🍾🔧",
 ].flatMap(s=> Array.from(s))
 
-const doingTable = Array.from("🚫🗨✔🎯➗⬇=!…⏩💠💥📈♾±≠⏸%📊▶❓♻⏪♀♂∛🔀🔗⬆💢🛑🔄⚛")
+const doingTable = Array.from("🚫🗨✔🎯➗⬇🟰❕…⏩>←📈♾≠⏸%📊▶±❔♻⏪♂♀⋮√〰∴🔄🔀↔⬆")
+.concat([
+  "(🔺🟩🔵)", "([ ][ ])", "(←↕→)", "(>|<)"
+])
+
+const randomIndex = <T extends unknown>(table: T[]) => random(1, table.length) -1
 
 const pick = (table: string[]) => {
-  return table.at(random(1, table.length) -1) as string
+  return table.at(randomIndex(table)) as string
 }
 
-const makeBeing = () => range(5).map(_ => pick(beingTable))
-const makeDoing = () => range(3).map(_ => pick(doingTable) + pick(beingTable))
+const uniqFill = <T extends unknown>(size: number, func: () => T) => {
+  let arr: T[] = []
+  while(arr.length < size) {
+    arr.push(...range(0, size - arr.length).map(_ => func()))
+    arr = uniq(arr)
+  }
+  return arr
+}
+
+const makeBeing = () => uniqFill(5, () => pick(beingTable))
+const makeDoing = () => uniqFill(3, () => pick(doingTable) + pick(beingTable))
 
 function App() {
   const [being, setBeing] = useState(makeBeing())
